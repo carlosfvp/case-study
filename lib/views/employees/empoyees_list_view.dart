@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../controllers/employee_filter_controller.dart';
 import 'employee_form.dart';
 
 class EmployeesListView extends StatelessWidget {
@@ -55,41 +56,43 @@ class EmployeesListView extends StatelessWidget {
 
   @override
   Widget build(context) {
-    final AppController controller = Get.find();
+    final AppController appController = Get.find();
+    final EmployeeFilterController employeeFilterController = Get.put(EmployeeFilterController());
 
     var listView = Obx(() => buildListView(
-        context, controller.employees, controller.employeeNameFilter.value));
+        context, appController.employees, employeeFilterController.employeeNameFilter.value));
 
-    var company = controller.getCompany(this.companyIdFilter);
+    var company = appController.getCompany(this.companyIdFilter);
 
     return Scaffold(
-        appBar: AppBar(title: Text("Case study")),
-        body: Center(
-          child: Column(children: <Widget>[
-            Text(company.company_name + " details",
-                style: Theme.of(context).textTheme.headline5),
-            Text(
-                "Contact name: " +
-                    company.contact_last_name +
-                    ", " +
-                    company.contact_first_name,
-                style: Theme.of(context).textTheme.headline5),
-            Text("Email: " + company.email,
-                style: Theme.of(context).textTheme.headline5),
-            TextField(
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(),
-                  hintText: 'Search by first or last name',
-                ),
-                onChanged: (inputText) =>
-                    controller.setEmployeeNameFilter(inputText)),
-            Expanded(child: Center(child: listView))
-          ]),
-        ),
-        floatingActionButton: FloatingActionButton(
-          child: Icon(Icons.add),
-          onPressed: () =>
-              Get.to(EmployeeForm(companyId: this.companyIdFilter)),
-        ));
+      appBar: AppBar(title: Text("Case study")),
+      body: Center(
+        child: Column(children: <Widget>[
+          Text(company.company_name + " details",
+              style: Theme.of(context).textTheme.headline5),
+          Text(
+              "Contact name: " +
+                  company.contact_last_name +
+                  ", " +
+                  company.contact_first_name,
+              style: Theme.of(context).textTheme.headline5),
+          Text("Email: " + company.email,
+              style: Theme.of(context).textTheme.headline5),
+          TextField(
+              decoration: InputDecoration(
+                border: OutlineInputBorder(),
+                hintText: 'Search by first or last name',
+              ),
+              onChanged:
+                  employeeFilterController.setEmployeeNameFilter),
+          Expanded(child: Center(child: listView))
+        ]),
+      ),
+      floatingActionButton: FloatingActionButton(
+        child: Icon(Icons.add),
+        onPressed: () =>
+            Get.to(EmployeeForm(companyId: this.companyIdFilter)),
+      )
+    );
   }
 }

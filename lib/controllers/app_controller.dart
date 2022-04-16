@@ -9,23 +9,6 @@ class AppController extends GetxController {
   var companies = <Company>[].obs;
   var employees = <Employee>[].obs;
 
-  var companyContactNameFilter = "".obs;
-  var companyNameFilter = "".obs;
-
-  var employeeNameFilter = "".obs;
-
-  setCompanyContactNameFilter(String contactName) {
-    companyContactNameFilter.value = contactName;
-  }
-
-  setCompanyNameFilter(String companyName) {
-    companyNameFilter.value = companyName;
-  }
-
-  setEmployeeNameFilter(String employeeName) {
-    employeeNameFilter.value = employeeName;
-  }
-
   Future<void> readCompanyData() async {
     final String response =
         await rootBundle.loadString('assets/company_data.json');
@@ -52,6 +35,10 @@ class AppController extends GetxController {
 
   Company getCompany(int id) {
     return companies.firstWhere((x) => x.id == id);
+  }
+
+  Company getCompanyByName(String name) {
+    return companies.firstWhere((x) => x.company_name.toLowerCase() == name.toLowerCase());
   }
 
   getEmployeesFromCompany(int id) {

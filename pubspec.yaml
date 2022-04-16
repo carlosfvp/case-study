@@ -21,7 +21,9 @@ environment:
   sdk: ">=2.7.0 <3.0.0"
 
 dependencies:
-  get: 4.1.4
+ #get: 4.1.4
+  get: 4.6.1
+  dropdown_search: 2.0.1
   flutter:
     sdk: flutter
 

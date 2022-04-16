@@ -1,4 +1,5 @@
 import 'package:casestudy/controllers/app_controller.dart';
+import 'package:casestudy/controllers/company_filter_controller.dart';
 import 'package:casestudy/models/company.dart';
 import 'package:casestudy/views/employees/empoyees_list_view.dart';
 import 'package:flutter/cupertino.dart';
@@ -6,7 +7,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class CompaniesListView extends StatelessWidget {
-  AppController controller = Get.find();
   BuildContext _context;
 
   Widget buildCompanyElement(Company c) {
@@ -74,11 +74,13 @@ class CompaniesListView extends StatelessWidget {
   @override
   Widget build(context) {
     _context = context;
+    final AppController appController = Get.find();
+    final CompanyFilterController companyFilterController = Get.put(CompanyFilterController());
 
     var listView = Obx(() => buildListView(
-        controller.companies,
-        controller.companyContactNameFilter.value,
-        controller.companyNameFilter.value));
+        appController.companies,
+        companyFilterController.companyContactNameFilter.value,
+        companyFilterController.companyNameFilter.value));
 
     return Scaffold(
         appBar: AppBar(
@@ -91,15 +93,13 @@ class CompaniesListView extends StatelessWidget {
                   border: OutlineInputBorder(),
                   hintText: 'Search by first or last name',
                 ),
-                onChanged: (inputText) =>
-                    controller.setCompanyContactNameFilter(inputText)),
+                onChanged: companyFilterController.setCompanyContactNameFilter),
             TextField(
                 decoration: InputDecoration(
                   border: OutlineInputBorder(),
                   hintText: 'Search by company name',
                 ),
-                onChanged: (inputText) =>
-                    controller.setCompanyNameFilter(inputText)),
+                onChanged: companyFilterController.setCompanyNameFilter),
             Expanded(child: Center(child: listView))
           ]),
         ));
