@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'controllers/app_controller.dart';
 
-void main () => runApp(GetMaterialApp(home: MyApp()));
+void main() => runApp(GetMaterialApp(home: MyApp()));
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
@@ -23,7 +23,10 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primarySwatch: Colors.blue,
         textTheme: const TextTheme(
-          headline4: TextStyle(fontSize: 30.0, fontWeight: FontWeight.normal, color: Colors.blueAccent),
+          headline4: TextStyle(
+              fontSize: 30.0,
+              fontWeight: FontWeight.normal,
+              color: Colors.blueAccent),
           //bodyText2: TextStyle(fontSize: 20.0, fontFamily: 'Hind'),
         ),
       ),
@@ -37,16 +40,8 @@ class MyHomePage extends StatelessWidget {
   Widget build(context) {
     final AppController controller = Get.put(AppController());
 
-    var list = CompaniesListView();
     //var list = EmployeesListView();
 
-    return Scaffold(
-        appBar: AppBar(title:Text("Case study")),
-        body: Center(child: Column(children: <Widget>[
-          Expanded(child: list)
-        ])),
-        //floatingActionButton:
-        //FloatingActionButton(child: Icon(Icons.add)/*, onPressed: c.increment*/)
-    );
+    return CompaniesListView();
   }
 }

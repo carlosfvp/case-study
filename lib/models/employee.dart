@@ -1,4 +1,3 @@
-
 import 'package:casestudy/controllers/app_controller.dart';
 
 import 'company.dart';
@@ -12,7 +11,9 @@ class Employee {
   Company company;
 
   Employee();
-  Employee.fromProps(String first_name, String last_name, String email, String avatar, Company company_id) {
+
+  Employee.fromProps(String first_name, String last_name, String email,
+      String avatar, Company company_id) {
     this.first_name = first_name;
     this.last_name = last_name;
     this.email = email;

@@ -1,4 +1,3 @@
-
 import 'package:casestudy/controllers/app_controller.dart';
 import 'package:casestudy/models/company.dart';
 import 'package:casestudy/models/employee.dart';
@@ -6,12 +5,14 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import 'employee_form.dart';
 
-class EmployeeListView extends StatelessWidget {
-  AppController controller = Get.find();
-  BuildContext _context;
+class EmployeesListView extends StatelessWidget {
+  final int companyIdFilter;
 
-  Widget buildEmployeeElement(Employee e) {
+  const EmployeesListView({Key key, this.companyIdFilter}) : super(key: key);
+
+  Widget buildEmployeeElement(BuildContext context, Employee e) {
     return Center(
       child: Card(
         child: Column(
@@ -20,14 +21,13 @@ class EmployeeListView extends StatelessWidget {
             ListTile(
               leading: CircleAvatar(
                 radius: 30.0,
-                backgroundImage:
-                NetworkImage("${e.avatar}"),
+                backgroundImage: NetworkImage("${e.avatar}"),
                 backgroundColor: Colors.transparent,
               ),
               title: Text(e.last_name + ", " + e.first_name,
-                  style: Theme.of(_context).textTheme.headline6),
-              subtitle: Text(e.email,
-                  style: Theme.of(_context).textTheme.headline6),
+                  style: Theme.of(context).textTheme.headline6),
+              subtitle:
+                  Text(e.email, style: Theme.of(context).textTheme.headline6),
             ),
           ],
         ),
@@ -35,21 +35,61 @@ class EmployeeListView extends StatelessWidget {
     );
   }
 
-  Widget buildListView(List<Employee> employees) {
+  Widget buildListView(
+      BuildContext context, List<Employee> employees, String nameFilter) {
     return ListView(
       padding: const EdgeInsets.all(20),
-      //scrollDirection: Axis.vertical,
-      //shrinkWrap: true,
-      children: employees.map((e)=>buildEmployeeElement(e)).toList(),
+      children: employees
+          .where((element) => element.company.id == this.companyIdFilter)
+          .where((element) =>
+              element.first_name
+                  .toLowerCase()
+                  .contains(nameFilter.toLowerCase()) ||
+              element.last_name
+                  .toLowerCase()
+                  .contains(nameFilter.toLowerCase()))
+          .map((e) => buildEmployeeElement(context, e))
+          .toList(),
     );
   }
 
   @override
   Widget build(context) {
-    _context = context;
-    var listView = buildListView(controller.employees);
-    //listView = Obx(() => buildListView(controller.companies));
+    final AppController controller = Get.find();
 
-    return Center(child: listView);
+    var listView = Obx(() => buildListView(
+        context, controller.employees, controller.employeeNameFilter.value));
+
+    var company = controller.getCompany(this.companyIdFilter);
+
+    return Scaffold(
+        appBar: AppBar(title: Text("Case study")),
+        body: Center(
+          child: Column(children: <Widget>[
+            Text(company.company_name + " details",
+                style: Theme.of(context).textTheme.headline5),
+            Text(
+                "Contact name: " +
+                    company.contact_last_name +
+                    ", " +
+                    company.contact_first_name,
+                style: Theme.of(context).textTheme.headline5),
+            Text("Email: " + company.email,
+                style: Theme.of(context).textTheme.headline5),
+            TextField(
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(),
+                  hintText: 'Search by first or last name',
+                ),
+                onChanged: (inputText) =>
+                    controller.setEmployeeNameFilter(inputText)),
+            Expanded(child: Center(child: listView))
+          ]),
+        ),
+        floatingActionButton: FloatingActionButton(
+          child: Icon(Icons.add),
+          onPressed: () =>
+              Get.to(EmployeeForm(companyId: this.companyIdFilter)),
+        ));
   }
 }

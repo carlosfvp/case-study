@@ -1,4 +1,3 @@
-
 import 'dart:convert';
 
 import 'package:casestudy/models/company.dart';
@@ -10,19 +9,39 @@ class AppController extends GetxController {
   var companies = <Company>[].obs;
   var employees = <Employee>[].obs;
 
+  var companyContactNameFilter = "".obs;
+  var companyNameFilter = "".obs;
+
+  var employeeNameFilter = "".obs;
+
+  setCompanyContactNameFilter(String contactName) {
+    companyContactNameFilter.value = contactName;
+  }
+
+  setCompanyNameFilter(String companyName) {
+    companyNameFilter.value = companyName;
+  }
+
+  setEmployeeNameFilter(String employeeName) {
+    employeeNameFilter.value = employeeName;
+  }
+
   Future<void> readCompanyData() async {
-    final String response = await rootBundle.loadString('assets/company_data.json');
+    final String response =
+        await rootBundle.loadString('assets/company_data.json');
     final data = await json.decode(response);
-    for(var jsonRow in data) {
+    for (var jsonRow in data) {
       companies.add(Company.fromJson(jsonRow));
     }
   }
 
   Future<void> readEmployeeData() async {
-    final String response = await rootBundle.loadString('assets/employee_data.json');
+    final String response =
+        await rootBundle.loadString('assets/employee_data.json');
     final data = await json.decode(response);
-    for(var jsonRow in data) {
-      employees.add(Employee.fromJson(jsonRow, getCompany(jsonRow["company_id"] as int)));
+    for (var jsonRow in data) {
+      employees.add(
+          Employee.fromJson(jsonRow, getCompany(jsonRow["company_id"] as int)));
     }
   }
 
